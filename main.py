@@ -1,39 +1,8 @@
 from tkinter import *
 from random import *
-
-
-def bubble_sort(canvas, bars, delay):
-    n = len(bars)
-    for i in range(n):
-        for j in range(0, n - i - 1):
-            if bars[j] > bars[j + 1]:
-                bars[j], bars[j + 1] = bars[j + 1], bars[j]
-                canvas.delete("all")
-                draw_bars(canvas, bars, 800, 400, j + 1)
-                canvas.update()
-                canvas.after(delay)
-        canvas.delete("all")
-        draw_bars(canvas, bars, 800, 400)
-        canvas.update()
-        canvas.after(delay)
-
-def selection_sort(canvas, bars, delay):
-    n = len(bars)
-    for i in range(n):
-        min_index = i
-        for j in range(i + 1, n):
-            if bars[j] < bars[min_index]:
-                min_index = j
-        if min_index != i:
-            bars[i], bars[min_index] = bars[min_index], bars[i]
-            canvas.delete("all")
-            draw_bars(canvas, bars, 800, 400, i)
-            canvas.update()
-            canvas.after(delay)
-    canvas.delete("all")
-    draw_bars(canvas, bars, 800, 400)
-    canvas.update()
-    canvas.after(delay)
+from bubble_sort import bubble_sort
+from selection_sort import selection_sort
+from merge_sort import merge_sort
 
 
 def random_list(size):
@@ -46,7 +15,12 @@ def random_list(size):
     return tab
 
 
-def draw_bars(canvas, bars, width, height, green_index=None):
+def draw_bars(canvas, bars, width, height, red_index=None, green_index=None):
+    if not canvas.winfo_exists():
+        return
+    if green_index is not None and not isinstance(green_index, list):
+        green_index = [green_index]
+    canvas.delete("all")
     bar_width = width // len(bars)
     max_value = max(bars)
     for i, value in enumerate(bars):
@@ -55,20 +29,25 @@ def draw_bars(canvas, bars, width, height, green_index=None):
         x1 = x0 + bar_width
         y1 = height - (value / max_value) * height
         fill_color = 'blue'
-        if i == green_index:
+        if i == red_index:
+            fill_color = 'red'
+        elif green_index and i in green_index:
             fill_color = 'green'
         canvas.create_rectangle(x0, y0, x1, y1, fill=fill_color)
-        canvas.create_text((x0 + x1) / 2, y1 - 10, text=str(value))
+        canvas.create_text((x0 + x1) / 2, y1 + 10, text=str(value), fill="white")
+    canvas.update()
+    canvas.after(10)
 
 
 def sort():
     algChoice = listbox.get(listbox.curselection())
     bars = random_list(50)
     if algChoice == "Bubble sort":
-        bubble_sort(canvas, bars, 100)
+        bubble_sort(canvas, bars, 1, draw_bars)
     elif algChoice == "Selection sort":
-        selection_sort(canvas, bars, 100)
-
+        selection_sort(canvas, bars, 1, draw_bars)
+    elif algChoice == "Merge sort":
+        merge_sort(canvas, bars, 0, len(bars) - 1, draw_bars, 10)
 
 
 window = Tk()
@@ -98,16 +77,16 @@ listbox.insert(3, "Quick sort")
 listbox.insert(4, "Insertion sort")
 
 scale1 = Scale(window, from_=10, to=100)
-scale1.place(x=35,y=350)
+scale1.place(x=35, y=350)
 
-scale_label1 = Label(window, text="Elements",bg="#4c4d49")
-scale_label1.place(x=30,y=320)
+scale_label1 = Label(window, text="Elements", bg="#4c4d49")
+scale_label1.place(x=30, y=320)
 
 scale2 = Scale(window, from_=1, to=30)
-scale2.place(x=110,y=350)
+scale2.place(x=110, y=350)
 
-scale_label2 = Label(window, text="Delay",bg="#4c4d49")
-scale_label2.place(x=105,y=320)
+scale_label2 = Label(window, text="Delay", bg="#4c4d49")
+scale_label2.place(x=105, y=320)
 
 canvas = Canvas(window, width=800, height=400)
 canvas.place(x=200, y=120)
