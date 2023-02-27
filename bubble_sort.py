@@ -1,4 +1,4 @@
-def bubble_sort(canvas, bars, delay, draw_bars):
+def bubble_sort(canvas, bars, draw_bars,delay):
 
     n = len(bars)
     for i in range(n):

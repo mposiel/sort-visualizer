@@ -3,9 +3,10 @@ from random import *
 from bubble_sort import bubble_sort
 from selection_sort import selection_sort
 from merge_sort import merge_sort
+from insertion_sort import insertion_sort
 
-
-def random_list(size):
+def random_list():
+    size = scale1.get()
     i = 1
     tab = []
     while (i <= size):
@@ -40,14 +41,19 @@ def draw_bars(canvas, bars, width, height, red_index=None, green_index=None):
 
 
 def sort():
+    if not listbox.curselection():
+        return
     algChoice = listbox.get(listbox.curselection())
-    bars = random_list(50)
+    bars = random_list()
     if algChoice == "Bubble sort":
-        bubble_sort(canvas, bars, 1, draw_bars)
+        bubble_sort(canvas, bars, draw_bars, delay=scale2.get())
     elif algChoice == "Selection sort":
-        selection_sort(canvas, bars, 1, draw_bars)
+        selection_sort(canvas, bars, draw_bars, delay=scale2.get())
     elif algChoice == "Merge sort":
-        merge_sort(canvas, bars, 0, len(bars) - 1, draw_bars, 10)
+        merge_sort(canvas, bars, 0, len(bars) - 1, draw_bars, delay=scale2.get())
+    elif algChoice == "Insertion sort":
+        insertion_sort(canvas, bars, draw_bars, delay=scale2.get())
+
 
 
 window = Tk()
@@ -82,7 +88,7 @@ scale1.place(x=35, y=350)
 scale_label1 = Label(window, text="Elements", bg="#4c4d49")
 scale_label1.place(x=30, y=320)
 
-scale2 = Scale(window, from_=1, to=30)
+scale2 = Scale(window, from_=1, to=100)
 scale2.place(x=110, y=350)
 
 scale_label2 = Label(window, text="Delay", bg="#4c4d49")

@@ -1,4 +1,4 @@
-def selection_sort(canvas, bars, delay, draw_bars):
+def selection_sort(canvas, bars, draw_bars, delay):
     n = len(bars)
     for i in range(n):
         min_index = i
